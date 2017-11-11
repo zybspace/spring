@@ -9,3 +9,8 @@
   容器：Spring包含并管理应用对象的配置和生命周期，在这个意义上它是一种容器，你可以配置你的每个bean如何被创建—一个可配置的原型（prototype），你的bean可以创建一个单独的实例或者每次需要时都生成一个新的实例，以及它们是如何关联的。
   框架：Spring可以将简单的组件配置，组成为复杂的应用，在Spring中应用对象被声明式组合，典型地是在一个XML文件里，Spring提供了很多基础功能（事务管理、持久化框架集成等等），将应用逻辑的开发留给了我们。
   MVC——Spring的作用是整合，但不仅仅限于整合，Spring 框架可以被看做是一个企业解决方案级别的框架。客户端发送请求，服务器控制器（由DispatcherServlet实现的)完成请求的转发，控制器调用一个用于映射的类HandlerMapping，该类用于将请求映射到对应的处理器来处理请求。HandlerMapping 将请求映射到对应的处理器Controller（相当于Action）在Spring 当中如果写一些处理器组件，一般实现Controller 接口，在Controller 中就可以调用一些Service 或DAO 来进行数据操作 ModelAndView 用于存放从DAO 中取出的数据，还可以存放响应视图的一些数据。 如果想将处理结果返回给用户，那么在Spring 框架中还提供一个视图组件ViewResolver，该组件根据Controller 返回的标示，找到对应的视图，将响应response 返回给用户。
+  
+3.spring的工作原理？（spring的两大核心）
+  spring的两大核心是ioc与aop。
+  IOC就是控制反转，就是将创建对象的权利交给spring容器来完成，由spring容器来维护对象的生命周期。
+  AOP就是面向切面编程，允许分离应用的业务逻辑与系统服务（如日志和事务管理）。
