@@ -1,1 +1,15 @@
+1.spring之ioc的实现
+  applicationContext.xml配置文件：
+  
+  <?xml version="1.0" encoding="UTF-8"?>
 
+  <beans xmlns="http://www.springframework.org/schema/beans"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="
+        http://www.springframework.org/schema/beans 
+        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+    <!-- 1个 bean 就是一个类的对象 -->
+    <bean id="hello" class="cn.spring.helloworld.HelloWorld"></bean>
+
+  </beans>
