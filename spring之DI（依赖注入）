@@ -1,0 +1,146 @@
+1.applicationContext.xml配置文件：
+  <?xml version="1.0" encoding="UTF-8"?>
+  <beans xmlns="http://www.springframework.org/schema/beans"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.springframework.org/schema/beans
+             http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+      <bean id="person" class="cn.spring.di.xml.set.Person">
+        <!-- 
+          property就是代表属性
+            在spring中基本类型(包装类型和String)都可以用value来赋值
+                                   引用类型用ref赋值
+         -->
+        <property name="pid" value="5"></property>
+        <property name="pname" value="王二麻子"></property>
+        <property name="student">
+          <ref bean="student"/>
+        </property>
+        <property name="lists">
+          <list>
+            <value>list1</value>
+            <value>list2</value>
+            <ref bean="student"/>
+          </list>
+        </property>
+        <property name="sets">
+          <set>
+            <value>set1</value>
+            <value>set2</value>
+            <ref bean="student"/>
+          </set>
+        </property>
+        <property name="map">
+          <map>
+            <entry key="map1">
+              <value>map1</value>
+            </entry>
+            <entry key="map2">
+              <value>map2</value>
+            </entry>
+            <entry key="map3">
+              <ref bean="student"/>
+            </entry>
+          </map>
+        </property>
+        <property name="properties">
+          <props>
+            <prop key="prop1">
+              prop1
+            </prop>
+          </props>
+        </property>
+      </bean>
+    <bean id="student" class="cn.spring.di.xml.set.Student"></bean>
+  </beans>
+  
+ 2.java对象
+  1）Person类
+    public class Person {
+      private Long pid;//包装类型
+      private String pname;//String类型
+      private Student student;//引用类型
+
+      private List lists;
+
+      private Set sets;
+      private Map map;
+
+      private Properties properties;
+      public Long getPid() {
+        return pid;
+      }
+
+      public void setPid(Long pid) {
+        this.pid = pid;
+      }
+
+      public String getPname() {
+        return pname;
+      }
+
+      public void setPname(String pname) {
+        this.pname = pname;
+      }
+
+      public Student getStudent() {
+        return student;
+      }
+
+      public void setStudent(Student student) {
+        this.student = student;
+      }
+
+      public List getLists() {
+        return lists;
+      }
+
+      public void setLists(List lists) {
+        this.lists = lists;
+      }
+
+      public Set getSets() {
+        return sets;
+      }
+
+      public void setSets(Set sets) {
+        this.sets = sets;
+      }
+
+      public Map getMap() {
+        return map;
+      }
+
+      public void setMap(Map map) {
+        this.map = map;
+      }
+
+      public Properties getProperties() {
+        return properties;
+      }
+
+      public void setProperties(Properties properties) {
+        this.properties = properties;
+      }
+    }
+   2）Student类
+    public class Student {
+      public void say(){
+        System.out.println("student");
+      }
+    }
+  
+  3.测试
+    public class Test {
+      public static void main(String[] args) {
+        ApplicationContext context=new ClassPathXmlApplicationContext("cn/spring/di/xml/set/applicationContext.xml");
+        Person person = (Person)context.getBean("person");
+
+        person.getStudent().say();
+        System.out.println(person.getPid());
+        System.out.println(person.getPname());
+        List lists = person.getLists();
+        for(int i=0;i<lists.size();i++){
+          System.out.println(lists.get(i).toString());
+        }
+      }
+    }
