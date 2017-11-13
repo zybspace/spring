@@ -1,15 +1,100 @@
-1.spring之ioc的实现
-  applicationContext.xml配置文件：
+1.spring之ioc创建bean对象
+  //默认构造函数创建
+  1）applicationContext.xml配置文件：
   
-  <?xml version="1.0" encoding="UTF-8"?>
+    <?xml version="1.0" encoding="UTF-8"?>
 
-  <beans xmlns="http://www.springframework.org/schema/beans"
-      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-      xsi:schemaLocation="
-        http://www.springframework.org/schema/beans 
-        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+    <beans xmlns="http://www.springframework.org/schema/beans"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+          http://www.springframework.org/schema/beans 
+          http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-    <!-- 1个 bean 就是一个类的对象 -->
-    <bean id="hello" class="cn.spring.helloworld.HelloWorld"></bean>
+      <!-- 1个 bean 就是一个类的对象 
+           在这个配置中，spring容器要用默认的构造函数为HelloWorld创建对象-->
+      <bean id="hello" class="cn.spring.helloworld.HelloWorld"></bean>
 
-  </beans>
+    </beans>
+    
+    2）创建java类
+      package cn.spring.helloword;
+      
+      public class Helloworld{
+        public void herro(){
+          System.out.println("helloworld");
+        }
+      }
+      
+     3)测试bean对象是否创建成功
+      public class HelloWorldTest {
+        public static void main(String[] args) {
+          /*HelloWorld hw=new HelloWorld();//创建对象 初始化代码手写
+          hw.hello();*/
+          /*
+           * 列一个清单 applicationContext.xml
+           * 这个清单上面列出所有的对象 
+           */
+          /*
+           * 1、启动springioc容器
+           * 2、从springioc容器中把id为hello这个bean 拿出来
+           * 3、对bean里面的方法进行调用
+           */
+          //启动springioc容器 好比对象工厂
+          ApplicationContext ac=new ClassPathXmlApplicationContext(
+              "cn/spring/helloworld/applicationContext.xml");
+          HelloWorld hw=(HelloWorld) ac.getBean("hello");
+          HelloWorld hw2=(HelloWorld) ac.getBean("hello");
+          System.out.println(hw.hashCode());
+          System.out.println(hw2.hashCode());
+          hw.hello();
+        }
+      }
+      
+    //静态工厂方式创建
+    1）applicationContext.xml配置文件：
+      <?xml version="1.0" encoding="UTF-8"?>
+
+      <beans xmlns="http://www.springframework.org/schema/beans"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="
+            http://www.springframework.org/schema/beans 
+            http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+        <!-- 1个 bean 就是一个类的对象 
+             在这个配置中，spring容器要用默认的构造函数为HelloWorld创建对象-->
+        <bean id="hello" class="cn.spring.helloworld.HelloWorld"></bean>
+
+        <!-- 
+          采用静态工厂方法创建对象
+           factory-method为工厂方法
+        -->
+        <bean id="helloWorld2" 
+         class="cn.spring.createobject.HelloWorldFactory" factory-method="getInstance"></bean>
+
+      </beans>
+      
+     2）静态工厂类
+      public class HelloWorldFactory {
+        public static HelloWorld getInstance(){
+          System.out.println("hellofactory");
+          return new HelloWorld();
+        }
+      }
+      
+     3）java对象类
+      public class HelloWorld {
+        public void hello(){
+          System.out.println("hello world");
+        }
+      }
+     
+     4）测试
+      public class HelloWorldTest {
+        public static void main(String[] args) {
+          ApplicationContext ac=new ClassPathXmlApplicationContext(
+              "cn/spring/createobject/applicationContext.xml");
+          HelloWorld hw=(HelloWorld) ac.getBean("helloWorld2");
+          hw.hello();
+        }
+
+      }
