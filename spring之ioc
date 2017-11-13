@@ -12,7 +12,24 @@
 
       <!-- 1个 bean 就是一个类的对象 
            在这个配置中，spring容器要用默认的构造函数为HelloWorld创建对象-->
-      <bean id="hello" class="cn.spring.helloworld.HelloWorld"></bean>
+      <!-- 
+         在启动spring容器的时候，spring容器配置文件中的类就已经创建完成对象了
+          lazy-init
+             default  false
+             true  在context.getBean的时候才要创建对象
+                *  优点
+                              如果该bean中有大数据存在，则什么时候context.getBean,什么时候创建对象
+                              可以防止数据过早的停留在内存中，做到了懒加载
+                *  缺点
+                               如果spring配置文件中，该bean的配置有错误，那么在tomcat容器启动的时候，发现不了
+             false 在启动spring容器的时候创建对象
+                *  优点
+                               如果在启动tomcat时要启动spring容器，
+                               那么如果spring容器会错误，这个时候tomcat容器不会正常启动
+                *  缺点
+                                如果存在大量的数据，会过早的停留在内存中
+        -->
+      <bean id="hello" class="cn.spring.helloworld.HelloWorld" lazy-init="true"></bean>
 
     </beans>
     
@@ -60,10 +77,6 @@
             http://www.springframework.org/schema/beans 
             http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-        <!-- 1个 bean 就是一个类的对象 
-             在这个配置中，spring容器要用默认的构造函数为HelloWorld创建对象-->
-        <bean id="hello" class="cn.spring.helloworld.HelloWorld"></bean>
-
         <!-- 
           采用静态工厂方法创建对象
            factory-method为工厂方法
@@ -97,4 +110,57 @@
           hw.hello();
         }
 
+      }
+      
+   //自己添加初始化与销毁方法
+   1）applicationContext.xml配置文件：
+    <?xml version="1.0" encoding="UTF-8"?>
+    <beans xmlns="http://www.springframework.org/schema/beans"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://www.springframework.org/schema/beans
+               http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+               <!-- 
+                  init-method
+                    * 该方法是由spring容器执行
+                    * 在构造函数之后执行
+                    * 如果在构造函数之后，在调用方法之前要做一些工作，可以在init方法中完成
+                  destroy-method
+                    * 如果该bean是单例，则在spring容器关闭或者销毁的时候，执行该方法
+                    * 如果该bean是多例，则spring容器不负责销毁
+                  说明：要想让spring容器控制bean的生命周期，那么该bean必须是单例
+                             如果该bean是多例，该bean中还有资源，关闭资源的操作由程序员完成
+                -->
+      <bean id="helloWorld" class="cn.spring.initdestroy.HelloWorld" scope="singleton" 
+          init-method="initmethod" destroy-method="destroym2"></bean>
+    </beans>
+    
+    2）java类
+      public class HelloWorld {
+	
+        public HelloWorld(){
+          System.out.println("aaaa");
+        }
+
+        public void initmethod(){
+          System.out.println("init");
+        }
+
+        public void destroym2(){
+          System.out.println("destroy");
+        }
+
+        public void hello(){
+          System.out.println("hello world");
+        }
+      }
+      
+     3）测试
+      public class Test {
+        public static void main(String[] args) {
+          ClassPathXmlApplicationContext applicationContext =
+                                new ClassPathXmlApplicationContext("cn/spring/initdestroy/applicationContext.xml");
+          HelloWorld helloWorld = (HelloWorld)applicationContext.getBean("helloWorld");
+          helloWorld.hello();
+          applicationContext.close();
+        }
       }
